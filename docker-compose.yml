@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # ─── Frontend (React + Nginx) ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: securevpn-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    networks:
+      - securevpn-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── WireGuard VPN Server ──────────────────────────────────────────────────
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: securevpn-wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - SERVERURL=${VPN_HOSTNAME:-vpn.example.com}
+      - SERVERPORT=${VPN_PORT:-51820}
+      - PEERS=1
+      - PEERDNS=1.1.1.1,8.8.8.8
+      - INTERNAL_SUBNET=10.8.0.0
+      - ALLOWEDIPS=0.0.0.0/0
+    volumes:
+      - ./wireguard-config:/config
+      - /lib/modules:/lib/modules:ro
+    ports:
+      - "${VPN_PORT:-51820}:51820/udp"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    networks:
+      - securevpn-net
+
+networks:
+  securevpn-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  wireguard-config:
