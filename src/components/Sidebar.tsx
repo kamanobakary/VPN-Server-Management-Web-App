@@ -33,7 +33,6 @@ export default function Sidebar({ activeTab, onTabChange, collapsed, onToggleCol
     max-md:w-16
   `}
 >
-    >
       {/* Logo */}
       <div
   className={`flex items-center gap-3 px-4 py-5 border-b border-gray-800 ${
