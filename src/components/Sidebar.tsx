@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
 import {
-  Shield, LayoutDashboard, Users, Network, Activity,
-  Settings, LogOut, ChevronLeft, ChevronRight, Menu, X
+  Shield,
+  LayoutDashboard,
+  Users,
+  Network,
+  Activity,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -30,26 +39,32 @@ export default function Sidebar({
 }: SidebarProps) {
   const { signOut, user } = useAuth();
 
-  // État uniquement pour le menu mobile
+  // État du menu sur téléphone
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Sur ordinateur : collapsed
+  // Sur téléphone : mobileOpen
+  const isExpanded = !collapsed || mobileOpen;
+
+  // Navigation
   const handleNavigation = (id: string) => {
     onTabChange(id);
 
-    // Fermer le menu uniquement sur téléphone
+    // Sur téléphone, fermer le menu après sélection
     setMobileOpen(false);
   };
 
   return (
     <>
-      {/* =========================
-          BOUTON MENU MOBILE ☰
-         ========================= */}
+      {/* ==============================
+          BOUTON 3 TRAITS - TELEPHONE
+          ============================== */}
       <button
         onClick={() => setMobileOpen(true)}
         className="
           hidden max-md:flex
-          fixed top-4 left-4 z-[60]
+          fixed top-4 left-4
+          z-[60]
           w-10 h-10
           items-center justify-center
           bg-gray-900
@@ -65,9 +80,9 @@ export default function Sidebar({
         <Menu className="w-5 h-5" />
       </button>
 
-      {/* =========================
-          OVERLAY MOBILE
-         ========================= */}
+      {/* ==============================
+          FOND SOMBRE TELEPHONE
+          ============================== */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
@@ -80,19 +95,25 @@ export default function Sidebar({
         />
       )}
 
-      {/* =========================
+      {/* ==============================
           SIDEBAR
-         ========================= */}
+          ============================== */}
       <aside
         className={`
-          relative flex flex-col h-full
+          relative
+          flex
+          flex-col
+          h-full
           bg-gray-950
-          border-r border-gray-800
-          transition-all duration-300 ease-in-out
+          border-r
+          border-gray-800
+          transition-all
+          duration-300
+          ease-in-out
 
           ${collapsed ? 'w-16' : 'w-60'}
 
-          /* MOBILE */
+          /* TELEPHONE */
           max-md:fixed
           max-md:left-0
           max-md:top-0
@@ -100,39 +121,49 @@ export default function Sidebar({
           max-md:w-60
           max-md:z-50
 
-          ${mobileOpen
-            ? 'max-md:translate-x-0'
-            : 'max-md:-translate-x-full'
+          ${
+            mobileOpen
+              ? 'max-md:translate-x-0'
+              : 'max-md:-translate-x-full'
           }
         `}
       >
 
-        {/* =========================
+        {/* ==============================
             LOGO
-           ========================= */}
+            ============================== */}
         <div
           className={`
-            flex items-center gap-3
-            px-4 py-5
-            border-b border-gray-800
+            flex
+            items-center
+            gap-3
+            px-4
+            py-5
+            border-b
+            border-gray-800
 
-            ${collapsed ? 'justify-center px-2' : ''}
+            ${isExpanded ? '' : 'justify-center px-2'}
           `}
         >
           <div
             className="
               flex-shrink-0
-              w-8 h-8
+              w-8
+              h-8
               bg-emerald-500/10
-              border border-emerald-500/30
+              border
+              border-emerald-500/30
               rounded-lg
-              flex items-center justify-center
+              flex
+              items-center
+              justify-center
             "
           >
             <Shield className="w-4 h-4 text-emerald-400" />
           </div>
 
-          {!collapsed && (
+          {/* SecureVPN Manager */}
+          {isExpanded && (
             <div>
               <div className="text-sm font-semibold text-white tracking-wide">
                 SecureVPN
@@ -152,14 +183,17 @@ export default function Sidebar({
             </div>
           )}
 
-          {/* Bouton X uniquement sur mobile */}
+          {/* X sur téléphone */}
           <button
             onClick={() => setMobileOpen(false)}
             className="
-              hidden max-md:flex
+              hidden
+              max-md:flex
               ml-auto
-              w-8 h-8
-              items-center justify-center
+              w-8
+              h-8
+              items-center
+              justify-center
               text-gray-400
               hover:text-white
             "
@@ -169,13 +203,14 @@ export default function Sidebar({
           </button>
         </div>
 
-        {/* =========================
+        {/* ==============================
             NAVIGATION
-           ========================= */}
+            ============================== */}
         <nav className="flex-1 py-4 overflow-y-auto">
           {navItems.map(({ id, label, icon: Icon }) => {
             const isActive = activeTab === id;
-            const showBadge = id === 'monitoring' && alertCount > 0;
+            const showBadge =
+              id === 'monitoring' && alertCount > 0;
 
             return (
               <button
@@ -195,7 +230,7 @@ export default function Sidebar({
                   text-sm
                   font-medium
 
-                  ${collapsed ? 'justify-center px-2' : ''}
+                  ${isExpanded ? '' : 'justify-center px-2'}
 
                   ${
                     isActive
@@ -203,12 +238,12 @@ export default function Sidebar({
                       : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
                   }
                 `}
-                title={collapsed ? label : undefined}
+                title={!isExpanded ? label : undefined}
               >
                 <div className="relative flex-shrink-0">
                   <Icon className="w-4 h-4" />
 
-                  {showBadge && collapsed && (
+                  {showBadge && !isExpanded && (
                     <span
                       className="
                         absolute
@@ -223,7 +258,8 @@ export default function Sidebar({
                   )}
                 </div>
 
-                {!collapsed && (
+                {/* Texte visible quand le menu est ouvert */}
+                {isExpanded && (
                   <>
                     <span>{label}</span>
 
@@ -252,26 +288,28 @@ export default function Sidebar({
           })}
         </nav>
 
-        {/* =========================
+        {/* ==============================
             USER / SIGN OUT
-           ========================= */}
+            ============================== */}
         <div
           className={`
             border-t
             border-gray-800
             p-3
 
-            ${collapsed ? 'flex justify-center' : ''}
+            ${isExpanded ? '' : 'flex justify-center'}
           `}
         >
-          {!collapsed && (
+          {isExpanded && (
             <div className="flex items-center gap-2 px-1 mb-2">
               <div
                 className="
-                  w-7 h-7
+                  w-7
+                  h-7
                   rounded-full
                   bg-emerald-500/20
-                  border border-emerald-500/30
+                  border
+                  border-emerald-500/30
                   flex
                   items-center
                   justify-center
@@ -325,19 +363,19 @@ export default function Sidebar({
               hover:text-red-400
               transition-colors
 
-              ${collapsed ? 'justify-center' : ''}
+              ${isExpanded ? '' : 'justify-center'}
             `}
-            title={collapsed ? 'Sign out' : undefined}
+            title={!isExpanded ? 'Sign out' : undefined}
           >
             <LogOut className="w-3.5 h-3.5 flex-shrink-0" />
 
-            {!collapsed && <span>Sign out</span>}
+            {isExpanded && <span>Sign out</span>}
           </button>
         </div>
 
-        {/* =========================
-            BOUTON COLLAPSE DESKTOP
-           ========================= */}
+        {/* ==============================
+            BOUTON REDUIRE - ORDINATEUR
+            ============================== */}
         <button
           onClick={onToggleCollapse}
           className="
