@@ -35,7 +35,11 @@ export default function Sidebar({ activeTab, onTabChange, collapsed, onToggleCol
 >
     >
       {/* Logo */}
-      <div className={`flex items-center gap-3 px-4 py-5 border-b border-gray-800 ${collapsed ? 'justify-center px-2' : ''}`}>
+      <div
+  className={`flex items-center gap-3 px-4 py-5 border-b border-gray-800 ${
+    collapsed ? 'justify-center px-2' : ''
+  }`}
+>
         <div className="flex-shrink-0 w-8 h-8 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex items-center justify-center">
           <Shield className="w-4 h-4 text-emerald-400" />
         </div>
