@@ -70,7 +70,7 @@ export default function Dashboard({ onTabChange }: { onTabChange: (t: string) =>
         onAlertClick={() => onTabChange('monitoring')}
       />
 
-      <div className="flex-1 p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 p-6 space-y-6 overflow-y-auto">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin" />
@@ -78,7 +78,7 @@ export default function Dashboard({ onTabChange }: { onTabChange: (t: string) =>
         ) : (
           <>
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
                 label="Active Sessions"
                 value={activeSessions}
@@ -115,7 +115,7 @@ export default function Dashboard({ onTabChange }: { onTabChange: (t: string) =>
             </div>
 
             {/* Second row: uptime + system */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
                 label="Server Uptime"
                 value={uptime}
