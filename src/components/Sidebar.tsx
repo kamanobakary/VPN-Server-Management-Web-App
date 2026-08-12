@@ -23,11 +23,31 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'vpn', label: 'VPN Management', icon: Network },
-  { id: 'users', label: 'User Management', icon: Users },
-  { id: 'monitoring', label: 'Monitoring', icon: Activity },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: LayoutDashboard
+  },
+  {
+    id: 'vpn',
+    label: 'VPN Management',
+    icon: Network
+  },
+  {
+    id: 'users',
+    label: 'User Management',
+    icon: Users
+  },
+  {
+    id: 'monitoring',
+    label: 'Monitoring',
+    icon: Activity
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: Settings
+  }
 ];
 
 export default function Sidebar({
@@ -39,141 +59,183 @@ export default function Sidebar({
 }: SidebarProps) {
   const { signOut, user } = useAuth();
 
-  // État d'ouverture du menu sur téléphone
+  // État du menu sur téléphone
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Sur ordinateur : collapsed
-  // Sur téléphone : mobileOpen
+  /*
+   * Sur ordinateur :
+   * collapsed = true  → sidebar 64px
+   * collapsed = false → sidebar 240px
+   *
+   * Sur téléphone :
+   * mobileOpen = true  → sidebar visible
+   * mobileOpen = false → sidebar cachée
+   */
   const isExpanded = !collapsed || mobileOpen;
 
-  // Quand on choisit un menu sur téléphone
+  // Navigation
   const handleNavigation = (id: string) => {
     onTabChange(id);
+
+    // Fermer uniquement le menu mobile
     setMobileOpen(false);
   };
 
   return (
     <>
-      {/* ======================================
-          BOUTON 3 TRAITS - TELEPHONE
-          ====================================== */}
+      {/* =====================================================
+          BOUTON MENU ☰ - TELEPHONE
+          ===================================================== */}
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
+        aria-label="Open menu"
         className="
-          hidden
-          max-md:flex
           fixed
-          top-4
           left-4
-          z-[60]
+          top-4
+          z-[10000]
+
           w-10
           h-10
+
+          flex
           items-center
           justify-center
+
           bg-gray-900
           border
           border-gray-700
           rounded-lg
+
           text-gray-300
+
           hover:text-white
           hover:border-emerald-500
+
           transition-colors
+
+          md:hidden
         "
-        aria-label="Open menu"
       >
-        <Menu className="w-5 h-5" />
+        <Menu className="w-6 h-6" />
       </button>
 
-      {/* ======================================
-          OVERLAY TELEPHONE
-          ====================================== */}
+      {/* =====================================================
+          OVERLAY - TELEPHONE
+          ===================================================== */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
           className="
-            hidden
-            max-md:block
             fixed
             inset-0
+            z-[9998]
+
             bg-black/60
-            z-40
+
+            md:hidden
           "
         />
       )}
 
-      {/* ======================================
+      {/* =====================================================
           SIDEBAR
-          ====================================== */}
+          ===================================================== */}
       <aside
         className={`
-          relative
+          fixed
+          left-0
+          top-0
+
+          z-[9999]
+
           flex
           flex-col
-          h-full
+
+          h-screen
+
           bg-gray-950
           border-r
           border-gray-800
+
           transition-all
           duration-300
           ease-in-out
 
-          ${collapsed ? 'w-16' : 'w-60'}
-
-          /* TELEPHONE */
-          max-md:fixed
-          max-md:left-0
-          max-md:top-0
-          max-md:h-screen
-          max-md:w-60
-          max-md:z-50
+          w-60
 
           ${
             mobileOpen
-              ? 'max-md:translate-x-0'
-              : 'max-md:-translate-x-full'
+              ? 'translate-x-0'
+              : '-translate-x-full'
           }
+
+          md:relative
+          md:translate-x-0
+          md:h-full
+          md:z-10
+
+          ${collapsed ? 'md:w-16' : 'md:w-60'}
         `}
       >
 
-        {/* ======================================
-            LOGO
-            ====================================== */}
+        {/* =====================================================
+            HEADER / LOGO
+            ===================================================== */}
         <div
           className={`
             flex
             items-center
             gap-3
+
             px-4
             py-5
+
             border-b
             border-gray-800
 
-            ${isExpanded ? '' : 'justify-center px-2'}
+            ${
+              isExpanded
+                ? 'justify-start'
+                : 'justify-center px-2'
+            }
           `}
         >
           {/* Shield */}
           <div
             className="
               flex-shrink-0
+
               w-8
               h-8
+
               bg-emerald-500/10
               border
               border-emerald-500/30
+
               rounded-lg
+
               flex
               items-center
               justify-center
             "
           >
-            <Shield className="w-4 h-4 text-emerald-400" />
+            <Shield className="w-5 h-5 text-emerald-400" />
           </div>
 
           {/* SecureVPN Manager */}
           {isExpanded && (
-            <div>
-              <div className="text-sm font-semibold text-white tracking-wide">
+            <div className="min-w-0">
+              <div
+                className="
+                  text-base
+                  font-semibold
+                  text-white
+                  tracking-wide
+                  whitespace-nowrap
+                "
+              >
                 SecureVPN
               </div>
 
@@ -191,138 +253,224 @@ export default function Sidebar({
             </div>
           )}
 
-          {/* X - téléphone uniquement */}
+          {/* =================================================
+              BOUTON X - TELEPHONE
+              ================================================= */}
           <button
             type="button"
             onClick={() => setMobileOpen(false)}
+            aria-label="Close menu"
             className="
-              hidden
-              max-md:flex
               ml-auto
+
               w-8
               h-8
+
+              flex
               items-center
               justify-center
+
               text-gray-400
+
               hover:text-white
+
+              transition-colors
+
+              md:hidden
             "
-            aria-label="Close menu"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* ======================================
+        {/* =====================================================
             NAVIGATION
-            ====================================== */}
-        <nav className="flex-1 py-4 overflow-y-auto">
-          {navItems.map(({ id, label, icon: Icon }) => {
-            const isActive = activeTab === id;
-            const showBadge =
-              id === 'monitoring' && alertCount > 0;
+            ===================================================== */}
+        <nav
+          className="
+            flex-1
+            py-4
 
-            return (
-              <button
-                type="button"
-                key={id}
-                onClick={() => handleNavigation(id)}
-                className={`
-                  w-full
-                  flex
-                  items-center
-                  gap-3
-                  px-4
-                  py-2.5
-                  mb-0.5
-                  relative
-                  transition-all
-                  duration-150
-                  text-sm
-                  font-medium
+            overflow-y-auto
+            overflow-x-hidden
+          "
+        >
+          {navItems.map(
+            ({ id, label, icon: Icon }) => {
+              const isActive = activeTab === id;
 
-                  ${isExpanded ? '' : 'justify-center px-2'}
+              const showBadge =
+                id === 'monitoring' &&
+                alertCount > 0;
 
-                  ${
-                    isActive
-                      ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-400'
-                      : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
+              return (
+                <button
+                  type="button"
+                  key={id}
+                  onClick={() =>
+                    handleNavigation(id)
                   }
-                `}
-                title={!isExpanded ? label : undefined}
-              >
-                <div className="relative flex-shrink-0">
-                  <Icon className="w-4 h-4" />
+                  className={`
+                    w-full
 
-                  {showBadge && !isExpanded && (
-                    <span
-                      className="
-                        absolute
-                        -top-1
-                        -right-1
-                        w-2
-                        h-2
-                        bg-red-500
-                        rounded-full
-                      "
-                    />
-                  )}
-                </div>
+                    flex
+                    items-center
 
-                {/* Texte visible quand la sidebar est ouverte */}
-                {isExpanded && (
-                  <>
-                    <span>{label}</span>
+                    gap-3
 
-                    {showBadge && (
-                      <span
-                        className="
-                          ml-auto
-                          bg-red-500/20
-                          text-red-400
-                          text-[10px]
-                          font-bold
-                          px-1.5
-                          py-0.5
-                          rounded-full
-                          border
-                          border-red-500/30
-                        "
-                      >
-                        {alertCount}
+                    px-4
+                    py-3
+
+                    mb-0.5
+
+                    relative
+
+                    transition-all
+                    duration-150
+
+                    text-sm
+                    font-medium
+
+                    ${
+                      isExpanded
+                        ? 'justify-start'
+                        : 'justify-center px-2'
+                    }
+
+                    ${
+                      isActive
+                        ? `
+                          bg-emerald-500/10
+                          text-emerald-400
+                          border-r-2
+                          border-emerald-400
+                        `
+                        : `
+                          text-gray-400
+                          hover:bg-gray-800/50
+                          hover:text-gray-200
+                        `
+                    }
+                  `}
+                  title={
+                    !isExpanded
+                      ? label
+                      : undefined
+                  }
+                >
+                  {/* Icon */}
+                  <div
+                    className="
+                      relative
+                      flex-shrink-0
+                    "
+                  >
+                    <Icon className="w-5 h-5" />
+
+                    {/* Badge quand sidebar réduite */}
+                    {showBadge &&
+                      !isExpanded && (
+                        <span
+                          className="
+                            absolute
+                            -top-1
+                            -right-1
+
+                            w-2
+                            h-2
+
+                            bg-red-500
+
+                            rounded-full
+                          "
+                        />
+                      )}
+                  </div>
+
+                  {/* Label */}
+                  {isExpanded && (
+                    <>
+                      <span className="whitespace-nowrap">
+                        {label}
                       </span>
-                    )}
-                  </>
-                )}
-              </button>
-            );
-          })}
+
+                      {/* Alert count */}
+                      {showBadge && (
+                        <span
+                          className="
+                            ml-auto
+
+                            bg-red-500/20
+                            text-red-400
+
+                            text-[10px]
+                            font-bold
+
+                            px-1.5
+                            py-0.5
+
+                            rounded-full
+
+                            border
+                            border-red-500/30
+                          "
+                        >
+                          {alertCount}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </button>
+              );
+            }
+          )}
         </nav>
 
-        {/* ======================================
+        {/* =====================================================
             USER / SIGN OUT
-            ====================================== */}
+            ===================================================== */}
         <div
           className={`
             border-t
             border-gray-800
+
             p-3
 
-            ${isExpanded ? '' : 'flex justify-center'}
+            ${
+              isExpanded
+                ? ''
+                : 'flex justify-center'
+            }
           `}
         >
+          {/* User information */}
           {isExpanded && (
-            <div className="flex items-center gap-2 px-1 mb-2">
+            <div
+              className="
+                flex
+                items-center
+                gap-2
+
+                px-1
+                mb-2
+              "
+            >
+              {/* Avatar */}
               <div
                 className="
-                  w-7
-                  h-7
+                  w-8
+                  h-8
+
                   rounded-full
+
                   bg-emerald-500/20
                   border
                   border-emerald-500/30
+
                   flex
                   items-center
                   justify-center
+
                   flex-shrink-0
                 "
               >
@@ -338,80 +486,123 @@ export default function Sidebar({
                 </span>
               </div>
 
+              {/* Email */}
               <div className="min-w-0">
                 <div
                   className="
                     text-xs
                     text-gray-300
                     font-medium
+
                     truncate
                   "
                 >
                   {user?.email ?? 'Admin'}
                 </div>
 
-                <div className="text-[10px] text-gray-500">
+                <div
+                  className="
+                    text-[10px]
+                    text-gray-500
+                  "
+                >
                   Administrator
                 </div>
               </div>
             </div>
           )}
 
+          {/* Sign out */}
           <button
             type="button"
             onClick={signOut}
             className={`
               w-full
+
               flex
               items-center
+
               gap-2
+
               px-2
-              py-1.5
+              py-2
+
               rounded-md
+
               text-xs
               text-gray-400
+
               hover:bg-red-500/10
               hover:text-red-400
+
               transition-colors
 
-              ${isExpanded ? '' : 'justify-center'}
+              ${
+                isExpanded
+                  ? 'justify-start'
+                  : 'justify-center'
+              }
             `}
-            title={!isExpanded ? 'Sign out' : undefined}
+            title={
+              !isExpanded
+                ? 'Sign out'
+                : undefined
+            }
           >
-            <LogOut className="w-3.5 h-3.5 flex-shrink-0" />
+            <LogOut
+              className="
+                w-4
+                h-4
 
-            {isExpanded && <span>Sign out</span>}
+                flex-shrink-0
+              "
+            />
+
+            {isExpanded && (
+              <span>Sign out</span>
+            )}
           </button>
         </div>
 
-        {/* ======================================
-            BOUTON COLLAPSE - ORDINATEUR
-            ====================================== */}
+        {/* =====================================================
+            COLLAPSE BUTTON - ORDINATEUR SEULEMENT
+            ===================================================== */}
         <button
           type="button"
           onClick={onToggleCollapse}
+          aria-label="Collapse sidebar"
           className="
             absolute
+
             -right-3
             top-1/2
-            -translate-y-1/2
 
-            max-md:hidden
+            -translate-y-1/2
 
             w-6
             h-6
+
             bg-gray-800
+
             border
             border-gray-700
+
             rounded-full
+
             flex
             items-center
             justify-center
+
             text-gray-400
+
             hover:text-white
             hover:border-gray-600
+
             transition-colors
-            z-10
+
+            z-20
+
+            max-md:hidden
           "
         >
           {collapsed ? (
