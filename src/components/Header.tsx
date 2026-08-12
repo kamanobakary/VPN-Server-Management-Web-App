@@ -13,7 +13,7 @@ interface HeaderProps {
 
 export default function Header({ title, subtitle, onRefresh, lastUpdated, alertCount = 0, onAlertClick }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
+    <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-800 bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10 min-w-0">
       <div>
         <h1 className="text-lg font-semibold text-white">{title}</h1>
         {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
@@ -23,7 +23,7 @@ export default function Header({ title, subtitle, onRefresh, lastUpdated, alertC
         {/* Server status indicator */}
         <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2.5 py-1 rounded-full">
           <Wifi className="w-3 h-3" />
-          <span className="font-medium">Server Online</span>
+          <span className="font-medium hidden sm:inline">Server Online</span>
         </div>
 
         {lastUpdated && (
