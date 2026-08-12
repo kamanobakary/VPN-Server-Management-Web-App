@@ -26,11 +26,13 @@ export default function Sidebar({ activeTab, onTabChange, collapsed, onToggleCol
 
   return (
     <aside
-      className={`
-        relative flex flex-col h-full bg-gray-950 border-r border-gray-800
-        transition-all duration-300 ease-in-out
-        ${collapsed ? 'w-16' : 'w-60'}
-      `}
+  className={`
+    relative flex flex-col h-full bg-gray-950 border-r border-gray-800
+    transition-all duration-300 ease-in-out
+    ${collapsed ? 'w-16' : 'w-60'}
+    max-md:w-16
+  `}
+>
     >
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-gray-800 ${collapsed ? 'justify-center px-2' : ''}`}>
