@@ -23,7 +23,7 @@ export default function Header({ title, subtitle, onRefresh, lastUpdated, alertC
         {/* Server status indicator */}
         <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2.5 py-1 rounded-full">
           <Wifi className="w-3 h-3" />
-          <span className="font-medium hidden sm:inline">Server Online</span>
+          <span className="font-medium">Server Online</span>
         </div>
 
         {lastUpdated && (
