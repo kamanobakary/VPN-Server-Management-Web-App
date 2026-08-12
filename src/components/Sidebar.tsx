@@ -69,11 +69,14 @@ export default function Sidebar({
           return (
             <button
               key={id}
-              onClick={() => {
-                onTabChange(id);
-                onToggleCollapse();
-              }}
-              className={`
+             onClick={() => {
+  onTabChange(id);
+  // Sur mobile, fermer la sidebar après avoir choisi une page
+  if (window.innerWidth < 768 && !collapsed) {
+    onToggleCollapse();
+  }
+  }}
+        className={`
                 w-full flex items-center gap-3 px-4 py-2.5 mb-0.5 relative
                 transition-all duration-150 text-sm font-medium
                 ${collapsed ? 'justify-center px-2' : ''}
