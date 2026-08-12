@@ -39,36 +39,41 @@ export default function Sidebar({
 }: SidebarProps) {
   const { signOut, user } = useAuth();
 
-  // État du menu sur téléphone
+  // État d'ouverture du menu sur téléphone
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Sur ordinateur : collapsed
   // Sur téléphone : mobileOpen
   const isExpanded = !collapsed || mobileOpen;
 
-  // Navigation
+  // Quand on choisit un menu sur téléphone
   const handleNavigation = (id: string) => {
     onTabChange(id);
-
-    // Sur téléphone, fermer le menu après sélection
     setMobileOpen(false);
   };
 
   return (
     <>
-      {/* ==============================
+      {/* ======================================
           BOUTON 3 TRAITS - TELEPHONE
-          ============================== */}
+          ====================================== */}
       <button
+        type="button"
         onClick={() => setMobileOpen(true)}
         className="
-          hidden max-md:flex
-          fixed top-4 left-4
+          hidden
+          max-md:flex
+          fixed
+          top-4
+          left-4
           z-[60]
-          w-10 h-10
-          items-center justify-center
+          w-10
+          h-10
+          items-center
+          justify-center
           bg-gray-900
-          border border-gray-700
+          border
+          border-gray-700
           rounded-lg
           text-gray-300
           hover:text-white
@@ -80,24 +85,26 @@ export default function Sidebar({
         <Menu className="w-5 h-5" />
       </button>
 
-      {/* ==============================
-          FOND SOMBRE TELEPHONE
-          ============================== */}
+      {/* ======================================
+          OVERLAY TELEPHONE
+          ====================================== */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
           className="
-            hidden max-md:block
-            fixed inset-0
+            hidden
+            max-md:block
+            fixed
+            inset-0
             bg-black/60
             z-40
           "
         />
       )}
 
-      {/* ==============================
+      {/* ======================================
           SIDEBAR
-          ============================== */}
+          ====================================== */}
       <aside
         className={`
           relative
@@ -129,9 +136,9 @@ export default function Sidebar({
         `}
       >
 
-        {/* ==============================
+        {/* ======================================
             LOGO
-            ============================== */}
+            ====================================== */}
         <div
           className={`
             flex
@@ -145,6 +152,7 @@ export default function Sidebar({
             ${isExpanded ? '' : 'justify-center px-2'}
           `}
         >
+          {/* Shield */}
           <div
             className="
               flex-shrink-0
@@ -183,8 +191,9 @@ export default function Sidebar({
             </div>
           )}
 
-          {/* X sur téléphone */}
+          {/* X - téléphone uniquement */}
           <button
+            type="button"
             onClick={() => setMobileOpen(false)}
             className="
               hidden
@@ -203,9 +212,9 @@ export default function Sidebar({
           </button>
         </div>
 
-        {/* ==============================
+        {/* ======================================
             NAVIGATION
-            ============================== */}
+            ====================================== */}
         <nav className="flex-1 py-4 overflow-y-auto">
           {navItems.map(({ id, label, icon: Icon }) => {
             const isActive = activeTab === id;
@@ -214,6 +223,7 @@ export default function Sidebar({
 
             return (
               <button
+                type="button"
                 key={id}
                 onClick={() => handleNavigation(id)}
                 className={`
@@ -258,7 +268,7 @@ export default function Sidebar({
                   )}
                 </div>
 
-                {/* Texte visible quand le menu est ouvert */}
+                {/* Texte visible quand la sidebar est ouverte */}
                 {isExpanded && (
                   <>
                     <span>{label}</span>
@@ -288,9 +298,9 @@ export default function Sidebar({
           })}
         </nav>
 
-        {/* ==============================
+        {/* ======================================
             USER / SIGN OUT
-            ============================== */}
+            ====================================== */}
         <div
           className={`
             border-t
@@ -348,6 +358,7 @@ export default function Sidebar({
           )}
 
           <button
+            type="button"
             onClick={signOut}
             className={`
               w-full
@@ -373,10 +384,11 @@ export default function Sidebar({
           </button>
         </div>
 
-        {/* ==============================
-            BOUTON REDUIRE - ORDINATEUR
-            ============================== */}
+        {/* ======================================
+            BOUTON COLLAPSE - ORDINATEUR
+            ====================================== */}
         <button
+          type="button"
           onClick={onToggleCollapse}
           className="
             absolute
