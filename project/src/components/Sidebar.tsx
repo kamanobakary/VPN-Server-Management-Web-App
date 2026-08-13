@@ -5,7 +5,7 @@ import {
   Users,
   Network,
   Activity,
-  Settings,
+  Settings as SettingsIcon,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -29,7 +29,7 @@ const navItems = [
   { id: 'vpn', label: 'VPN Management', icon: Network },
   { id: 'users', label: 'User Management', icon: Users },
   { id: 'monitoring', label: 'Monitoring', icon: Activity },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'settings', label: 'Settings', icon: SettingsIcon },
 ];
 
 const settingsItems = [
@@ -49,6 +49,18 @@ export default function Sidebar({
   const { signOut, user } = useAuth();
 
   const isSettingsActive = activeTab === 'settings';
+
+  const openSettingsSection = (section: string) => {
+    // Ouvre Settings
+    onTabChange('settings');
+
+    // Informe Settings.tsx de la section choisie
+    window.dispatchEvent(
+      new CustomEvent('settings-section', {
+        detail: section,
+      })
+    );
+  };
 
   return (
     <aside
@@ -88,8 +100,9 @@ export default function Sidebar({
 
           return (
             <React.Fragment key={id}>
-              {/* Main menu button */}
+              {/* Main button */}
               <button
+                type="button"
                 onClick={() => onTabChange(id)}
                 className={`
                   w-full flex items-center gap-3 px-4 py-2.5 mb-0.5 relative
@@ -128,17 +141,15 @@ export default function Sidebar({
               {id === 'settings' && isSettingsActive && !collapsed && (
                 <div className="ml-7 mr-2 mt-1 mb-2 border-l border-gray-800 pl-2">
                   {settingsItems.map(
-                    ({ id: settingId, label: settingLabel, icon: SettingIcon }) => (
+                    ({
+                      id: settingId,
+                      label: settingLabel,
+                      icon: SettingIcon,
+                    }) => (
                       <button
                         key={settingId}
-                        onClick={() => {
-                          onTabChange('settings');
-                          window.dispatchEvent(
-                            new CustomEvent('settings-section', {
-                              detail: settingId,
-                            })
-                          );
-                        }}
+                        type="button"
+                        onClick={() => openSettingsSection(settingId)}
                         className="
                           w-full flex items-center gap-2.5
                           px-3 py-2 rounded-md
@@ -178,6 +189,7 @@ export default function Sidebar({
               <div className="text-xs text-gray-300 font-medium truncate">
                 {user?.email ?? 'Admin'}
               </div>
+
               <div className="text-[10px] text-gray-500">
                 Administrator
               </div>
@@ -186,6 +198,7 @@ export default function Sidebar({
         )}
 
         <button
+          type="button"
           onClick={signOut}
           className={`
             w-full flex items-center gap-2 px-2 py-1.5 rounded-md
@@ -196,12 +209,14 @@ export default function Sidebar({
           title={collapsed ? 'Sign out' : undefined}
         >
           <LogOut className="w-3.5 h-3.5 flex-shrink-0" />
+
           {!collapsed && <span>Sign out</span>}
         </button>
       </div>
 
-      {/* Collapse toggle */}
+      {/* Collapse button */}
       <button
+        type="button"
         onClick={onToggleCollapse}
         className="
           absolute -right-3 top-1/2 -translate-y-1/2
