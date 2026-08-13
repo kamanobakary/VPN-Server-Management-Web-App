@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell, RefreshCw, Wifi } from 'lucide-react';
-import { timeAgo } from '../lib/utils';
 
 interface HeaderProps {
   title: string;
@@ -19,17 +18,49 @@ export default function Header({
   alertCount = 0,
   onAlertClick,
 }: HeaderProps) {
+  const [counter, setCounter] = useState(0);
+  const [updating, setUpdating] = useState(false);
 
-  // Mise à jour automatique toutes les 5 secondes
   useEffect(() => {
     if (!onRefresh) return;
 
-    const interval = setInterval(() => {
-      onRefresh();
-    }, 5000);
+    const timer = setInterval(async () => {
+      setCounter((previous) => {
+        const next = previous + 1;
 
-    return () => clearInterval(interval);
+        // À 5 secondes : lancer automatiquement Update
+        if (next >= 5) {
+          setTimeout(async () => {
+            try {
+              setUpdating(true);
+              await onRefresh();
+            } finally {
+              setUpdating(false);
+              setCounter(0);
+            }
+          }, 0);
+
+          return 0;
+        }
+
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, [onRefresh]);
+
+  const handleManualRefresh = async () => {
+    if (!onRefresh || updating) return;
+
+    try {
+      setUpdating(true);
+      await onRefresh();
+      setCounter(0);
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
@@ -47,7 +78,7 @@ export default function Header({
 
       <div className="flex items-center gap-3">
 
-        {/* Server status indicator */}
+        {/* Server status */}
         <div className="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-400/10 border border-emerald-400/20 px-2.5 py-1 rounded-full">
           <Wifi className="w-3 h-3" />
           <span className="font-medium">
@@ -55,22 +86,25 @@ export default function Header({
           </span>
         </div>
 
-        {/* Last update */}
-        {lastUpdated && (
-          <span className="text-xs text-gray-500 hidden sm:block">
-            Updated {timeAgo(lastUpdated)}
-          </span>
-        )}
+        {/* Compteur */}
+        <span className="text-xs text-gray-500 hidden sm:block">
+          Updated {counter}s ago
+        </span>
 
-        {/* Refresh button - manuel + automatique */}
+        {/* Bouton Update */}
         {onRefresh && (
           <button
             type="button"
-            onClick={onRefresh}
-            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors"
-            title="Refresh"
+            onClick={handleManualRefresh}
+            disabled={updating}
+            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors disabled:opacity-50"
+            title="Update"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw
+              className={`w-4 h-4 ${
+                updating ? 'animate-spin text-emerald-400' : ''
+              }`}
+            />
           </button>
         )}
 
