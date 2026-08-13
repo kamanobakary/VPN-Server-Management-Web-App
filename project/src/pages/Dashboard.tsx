@@ -26,10 +26,9 @@ export default function Dashboard({ onTabChange }: { onTabChange: (t: string) =>
   const [lastUpdated, setLastUpdated] = useState(new Date().toISOString());
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
-    setLoading(true);
+ const load = useCallback(async () => {
 
-    const [usersRes, trafficRes, sessionsRes, alertsRes] = await Promise.all([
+  const [usersRes, trafficRes, sessionsRes, alertsRes] = await Promise.all([
       supabase.from('vpn_users').select('id, is_enabled, expires_at'),
       supabase.from('traffic_stats').select('*').order('hour', { ascending: true }),
       supabase.from('vpn_sessions').select('*').order('started_at', { ascending: false }).limit(8),
@@ -48,22 +47,12 @@ export default function Dashboard({ onTabChange }: { onTabChange: (t: string) =>
     if (sessionsRes.data) setSessions(sessionsRes.data as VpnSession[]);
     if (alertsRes.data) setAlerts(alertsRes.data as Alert[]);
 
-    setLastUpdated(new Date().toISOString());
-    setLoading(false);
-  }, []);
+setLastUpdated(new Date().toISOString());
+setLoading(false);
+}, []);
 
- useEffect(() => {
-  // Premier update immédiatement
+useEffect(() => {
   load();
-
-  // Déclenche automatiquement le même update que le bouton 🔄
-  const autoUpdate = setInterval(() => {
-    load();
-  }, 5000);
-
-  return () => {
-    clearInterval(autoUpdate);
-  };
 }, [load]);
 
   const latestStat = traffic[traffic.length - 1];
