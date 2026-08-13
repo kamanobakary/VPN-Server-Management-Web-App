@@ -70,7 +70,7 @@ export default function Settings() {
 
       <div className="flex-1 flex gap-0 overflow-hidden">
         {/* Settings nav */}
-        <div className="w-44 bg-gray-950 border-r border-gray-800 p-3 flex-shrink-0">
+        <div className="w-44 bg-gray-950 p-3 flex-shrink-0">
           {sections.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
