@@ -9,10 +9,6 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Server,
-  Lock,
-  Bell,
-  KeyRound,
   ArrowLeft,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -31,13 +27,6 @@ const navItems = [
   { id: 'users', label: 'User Management', icon: Users },
   { id: 'monitoring', label: 'Monitoring', icon: Activity },
   { id: 'settings', label: 'Settings', icon: SettingsIcon },
-];
-
-const settingsItems = [
-  { id: 'server', label: 'Server', icon: Server },
-  { id: 'security', label: 'Security', icon: Lock },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'api', label: 'API & Access', icon: KeyRound },
 ];
 
 export default function Sidebar({
@@ -59,16 +48,6 @@ export default function Sidebar({
   const closeSettings = () => {
     setSettingsOpen(false);
     onTabChange('dashboard');
-  };
-
-  const openSettingsSection = (section: string) => {
-    onTabChange('settings');
-
-    window.dispatchEvent(
-      new CustomEvent('settings-section', {
-        detail: section,
-      })
-    );
   };
 
   return (
@@ -106,7 +85,6 @@ export default function Sidebar({
       <nav className="flex-1 py-4 overflow-y-auto">
         {!settingsOpen ? (
           <>
-            {/* Main navigation */}
             {navItems.map(({ id, label, icon: Icon }) => {
               const isActive = activeTab === id;
               const showBadge =
@@ -160,24 +138,14 @@ export default function Sidebar({
           </>
         ) : (
           <>
-            {/* Settings navigation */}
-            {!collapsed && (
-              <div className="px-4 mb-3">
-                <div className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">
-                  Settings
-                </div>
-              </div>
-            )}
-
             {/* Back button */}
             <button
               type="button"
               onClick={closeSettings}
               className={`
-                w-full flex items-center gap-3 px-4 py-2.5 mb-2
-                text-sm font-medium text-gray-400
-                hover:bg-gray-800/50 hover:text-gray-200
-                transition-all duration-150
+                w-full flex items-center gap-3 px-4 py-2.5 mb-0.5
+                transition-all duration-150 text-sm font-medium
+                text-gray-400 hover:bg-gray-800/50 hover:text-gray-200
                 ${collapsed ? 'justify-center px-2' : ''}
               `}
               title={collapsed ? 'Back' : undefined}
@@ -186,29 +154,6 @@ export default function Sidebar({
 
               {!collapsed && <span>Back</span>}
             </button>
-
-            {/* Settings buttons */}
-            {settingsItems.map(
-              ({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => openSettingsSection(id)}
-                  className={`
-                    w-full flex items-center gap-3 px-4 py-2.5 mb-0.5
-                    text-sm font-medium text-gray-400
-                    hover:bg-gray-800/50 hover:text-gray-200
-                    transition-all duration-150
-                    ${collapsed ? 'justify-center px-2' : ''}
-                  `}
-                  title={collapsed ? label : undefined}
-                >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-
-                  {!collapsed && <span>{label}</span>}
-                </button>
-              )
-            )}
           </>
         )}
       </nav>
