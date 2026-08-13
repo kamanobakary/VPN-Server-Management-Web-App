@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Shield,
   LayoutDashboard,
@@ -13,6 +13,7 @@ import {
   Lock,
   Bell,
   KeyRound,
+  ArrowLeft,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
@@ -48,13 +49,21 @@ export default function Sidebar({
 }: SidebarProps) {
   const { signOut, user } = useAuth();
 
-  const isSettingsActive = activeTab === 'settings';
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const openSettings = () => {
+    setSettingsOpen(true);
+    onTabChange('settings');
+  };
+
+  const closeSettings = () => {
+    setSettingsOpen(false);
+    onTabChange('dashboard');
+  };
 
   const openSettingsSection = (section: string) => {
-    // Ouvre Settings
     onTabChange('settings');
 
-    // Informe Settings.tsx de la section choisie
     window.dispatchEvent(
       new CustomEvent('settings-section', {
         detail: section,
@@ -85,6 +94,7 @@ export default function Sidebar({
             <div className="text-sm font-semibold text-white tracking-wide">
               SecureVPN
             </div>
+
             <div className="text-[10px] text-emerald-400/70 font-mono uppercase tracking-widest">
               Manager
             </div>
@@ -94,81 +104,113 @@ export default function Sidebar({
 
       {/* Navigation */}
       <nav className="flex-1 py-4 overflow-y-auto">
-        {navItems.map(({ id, label, icon: Icon }) => {
-          const isActive = activeTab === id;
-          const showBadge = id === 'monitoring' && alertCount > 0;
+        {!settingsOpen ? (
+          <>
+            {/* Main navigation */}
+            {navItems.map(({ id, label, icon: Icon }) => {
+              const isActive = activeTab === id;
+              const showBadge =
+                id === 'monitoring' && alertCount > 0;
 
-          return (
-            <React.Fragment key={id}>
-              {/* Main button */}
-              <button
-                type="button"
-                onClick={() => onTabChange(id)}
-                className={`
-                  w-full flex items-center gap-3 px-4 py-2.5 mb-0.5 relative
-                  transition-all duration-150 text-sm font-medium
-                  ${collapsed ? 'justify-center px-2' : ''}
-                  ${
-                    isActive
-                      ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-400'
-                      : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
-                  }
-                `}
-                title={collapsed ? label : undefined}
-              >
-                <div className="relative flex-shrink-0">
-                  <Icon className="w-4 h-4" />
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => {
+                    if (id === 'settings') {
+                      openSettings();
+                    } else {
+                      onTabChange(id);
+                    }
+                  }}
+                  className={`
+                    w-full flex items-center gap-3 px-4 py-2.5 mb-0.5 relative
+                    transition-all duration-150 text-sm font-medium
+                    ${collapsed ? 'justify-center px-2' : ''}
+                    ${
+                      isActive
+                        ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-400'
+                        : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
+                    }
+                  `}
+                  title={collapsed ? label : undefined}
+                >
+                  <div className="relative flex-shrink-0">
+                    <Icon className="w-4 h-4" />
 
-                  {showBadge && collapsed && (
-                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-                  )}
-                </div>
-
-                {!collapsed && (
-                  <>
-                    <span>{label}</span>
-
-                    {showBadge && (
-                      <span className="ml-auto bg-red-500/20 text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-red-500/30">
-                        {alertCount}
-                      </span>
+                    {showBadge && collapsed && (
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
                     )}
-                  </>
-                )}
-              </button>
+                  </div>
 
-              {/* Settings submenu */}
-              {id === 'settings' && isSettingsActive && !collapsed && (
-                <div className="ml-7 mr-2 mt-1 mb-2 border-l border-gray-800 pl-2">
-                  {settingsItems.map(
-                    ({
-                      id: settingId,
-                      label: settingLabel,
-                      icon: SettingIcon,
-                    }) => (
-                      <button
-                        key={settingId}
-                        type="button"
-                        onClick={() => openSettingsSection(settingId)}
-                        className="
-                          w-full flex items-center gap-2.5
-                          px-3 py-2 rounded-md
-                          text-xs text-gray-500
-                          hover:bg-gray-800/60
-                          hover:text-gray-200
-                          transition-colors
-                        "
-                      >
-                        <SettingIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span>{settingLabel}</span>
-                      </button>
-                    )
+                  {!collapsed && (
+                    <>
+                      <span>{label}</span>
+
+                      {showBadge && (
+                        <span className="ml-auto bg-red-500/20 text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-red-500/30">
+                          {alertCount}
+                        </span>
+                      )}
+                    </>
                   )}
+                </button>
+              );
+            })}
+          </>
+        ) : (
+          <>
+            {/* Settings navigation */}
+            {!collapsed && (
+              <div className="px-4 mb-3">
+                <div className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">
+                  Settings
                 </div>
-              )}
-            </React.Fragment>
-          );
-        })}
+              </div>
+            )}
+
+            {/* Back button */}
+            <button
+              type="button"
+              onClick={closeSettings}
+              className={`
+                w-full flex items-center gap-3 px-4 py-2.5 mb-2
+                text-sm font-medium text-gray-400
+                hover:bg-gray-800/50 hover:text-gray-200
+                transition-all duration-150
+                ${collapsed ? 'justify-center px-2' : ''}
+              `}
+              title={collapsed ? 'Back' : undefined}
+            >
+              <ArrowLeft className="w-4 h-4 flex-shrink-0" />
+
+              {!collapsed && <span>Back</span>}
+            </button>
+
+            {/* Settings buttons */}
+            {settingsItems.map(
+              ({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => openSettingsSection(id)}
+                  className={`
+                    w-full flex items-center gap-3 px-4 py-2.5 mb-0.5
+                    text-sm font-medium text-gray-400
+                    hover:bg-gray-800/50 hover:text-gray-200
+                    transition-all duration-150
+                    ${collapsed ? 'justify-center px-2' : ''}
+                  `}
+                  title={collapsed ? label : undefined}
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+
+                  {!collapsed && <span>{label}</span>}
+                </button>
+              )
+            )}
+          </>
+        )}
       </nav>
 
       {/* User / Sign out */}
