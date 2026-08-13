@@ -68,9 +68,9 @@ export default function Settings() {
     <div className="flex flex-col h-full">
       <Header title="Settings" subtitle="Configure your VPN server and application settings" />
 
-      <div className="flex-1 flex gap-0 overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row gap-0 overflow-hidden">
         {/* Settings nav */}
-        <div className="w-44 bg-gray-950 p-3 flex-shrink-0">
+        <div className="w-full md:w-44 bg-gray-950 p-3 flex-shrink-0">
           {sections.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -88,7 +88,7 @@ export default function Settings() {
         </div>
 
         {/* Settings content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 w-full min-w-0 overflow-y-auto p-4 md:p-6">
           {saved && (
             <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-sm rounded-lg px-4 py-3 mb-5">
               <CheckCircle className="w-4 h-4" />
