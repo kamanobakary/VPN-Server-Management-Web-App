@@ -1,4 +1,9 @@
-export default async function handler(req, res) {
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+
+export default async function handler(
+  req: VercelRequest,
+  res: VercelResponse
+) {
   if (req.method !== "GET") {
     return res.status(405).json({
       error: "Method not allowed",
@@ -17,7 +22,6 @@ export default async function handler(req, res) {
     const response = await fetch(
       "https://api.supabase.com/v1/projects",
       {
-        method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
