@@ -52,7 +52,17 @@ export default function Dashboard({ onTabChange }: { onTabChange: (t: string) =>
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+  load();
+
+  const interval = setInterval(() => {
+    load();
+  }, 10000);
+
+  return () => {
+    clearInterval(interval);
+  };
+}, [load]);
 
   const latestStat = traffic[traffic.length - 1];
   const totalBytesIn = traffic.reduce((s, t) => s + t.bytes_in, 0);
