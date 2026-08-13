@@ -19,48 +19,21 @@ export default function Header({
   onAlertClick,
 }: HeaderProps) {
   const [counter, setCounter] = useState(0);
-  const [updating, setUpdating] = useState(false);
 
+  // Compteur indépendant du reste de l'application
   useEffect(() => {
-    if (!onRefresh) return;
-
-    const timer = setInterval(async () => {
-      setCounter((previous) => {
-        const next = previous + 1;
-
-        // À 5 secondes : lancer automatiquement Update
-        if (next >= 5) {
-          setTimeout(async () => {
-            try {
-              setUpdating(true);
-              await onRefresh();
-            } finally {
-              setUpdating(false);
-              setCounter(0);
-            }
-          }, 0);
-
+    const timer = setInterval(() => {
+      setCounter((value) => {
+        if (value >= 59) {
           return 0;
         }
 
-        return next;
+        return value + 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [onRefresh]);
-
-  const handleManualRefresh = async () => {
-    if (!onRefresh || updating) return;
-
-    try {
-      setUpdating(true);
-      await onRefresh();
-      setCounter(0);
-    } finally {
-      setUpdating(false);
-    }
-  };
+  }, []);
 
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
@@ -86,7 +59,7 @@ export default function Header({
           </span>
         </div>
 
-        {/* Compteur */}
+        {/* Compteur indépendant */}
         <span className="text-xs text-gray-500 hidden sm:block">
           Updated {counter}s ago
         </span>
@@ -95,20 +68,15 @@ export default function Header({
         {onRefresh && (
           <button
             type="button"
-            onClick={handleManualRefresh}
-            disabled={updating}
-            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors disabled:opacity-50"
+            onClick={onRefresh}
+            className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors"
             title="Update"
           >
-            <RefreshCw
-              className={`w-4 h-4 ${
-                updating ? 'animate-spin text-emerald-400' : ''
-              }`}
-            />
+            <RefreshCw className="w-4 h-4" />
           </button>
         )}
 
-        {/* Alerts */}
+        {/* Alertes */}
         <button
           type="button"
           onClick={onAlertClick}
