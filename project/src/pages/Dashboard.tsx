@@ -52,15 +52,17 @@ export default function Dashboard({ onTabChange }: { onTabChange: (t: string) =>
     setLoading(false);
   }, []);
 
-  useEffect(() => {
+ useEffect(() => {
+  // Premier update immédiatement
   load();
 
-  const interval = setInterval(() => {
+  // Déclenche automatiquement le même update que le bouton 🔄
+  const autoUpdate = setInterval(() => {
     load();
-  }, 10000);
+  }, 5000);
 
   return () => {
-    clearInterval(interval);
+    clearInterval(autoUpdate);
   };
 }, [load]);
 
