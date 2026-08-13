@@ -36,7 +36,7 @@ export default function Header({
   }, []);
 
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
+    <header className="flex items-center justify-between px-6 py-4 bg-gray-950/50 backdrop-blur-sm sticky top-0 z-10">
       <div>
         <h1 className="text-lg font-semibold text-white">
           {title}
