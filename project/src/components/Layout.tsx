@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 
 interface LayoutProps {
@@ -8,11 +8,17 @@ interface LayoutProps {
   alertCount: number;
 }
 
-export default function Layout({ children, activeTab, onTabChange, alertCount }: LayoutProps) {
+export default function Layout({
+  children,
+  activeTab,
+  onTabChange,
+  alertCount,
+}: LayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-950 overflow-hidden font-sans">
+    <div className="flex h-screen w-full bg-gray-950 overflow-hidden font-sans">
+      {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
         onTabChange={onTabChange}
@@ -20,8 +26,10 @@ export default function Layout({ children, activeTab, onTabChange, alertCount }:
         onToggleCollapse={() => setCollapsed((c) => !c)}
         alertCount={alertCount}
       />
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <div className="flex-1 overflow-y-auto">
+
+      {/* Main content */}
+      <main className="flex-1 min-w-0 w-full overflow-hidden">
+        <div className="h-full w-full overflow-y-auto overflow-x-hidden">
           {children}
         </div>
       </main>
