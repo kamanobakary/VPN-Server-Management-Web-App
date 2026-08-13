@@ -7,8 +7,6 @@ import {
   Activity,
   Settings as SettingsIcon,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
   ArrowLeft,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -53,14 +51,14 @@ export default function Sidebar({
   return (
     <aside
       className={`
-        relative flex flex-col h-full bg-gray-950 border-r border-gray-800
+        relative flex flex-col h-full bg-gray-950
         transition-all duration-300 ease-in-out
         ${collapsed ? 'w-16' : 'w-60'}
       `}
     >
       {/* Logo */}
       <div
-        className={`flex items-center gap-3 px-4 py-5 border-b border-gray-800 ${
+        className={`flex items-center gap-3 px-4 py-5 ${
           collapsed ? 'justify-center px-2' : ''
         }`}
       >
@@ -102,12 +100,12 @@ export default function Sidebar({
                     }
                   }}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-2.5 mb-0.5 relative
+                    w-full flex items-center gap-3 px-4 py-2.5 mb-0.5
                     transition-all duration-150 text-sm font-medium
                     ${collapsed ? 'justify-center px-2' : ''}
                     ${
                       isActive
-                        ? 'bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-400'
+                        ? 'bg-emerald-500/10 text-emerald-400'
                         : 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200'
                     }
                   `}
@@ -126,7 +124,7 @@ export default function Sidebar({
                       <span>{label}</span>
 
                       {showBadge && (
-                        <span className="ml-auto bg-red-500/20 text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-red-500/30">
+                        <span className="ml-auto bg-red-500/20 text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
                           {alertCount}
                         </span>
                       )}
@@ -143,7 +141,7 @@ export default function Sidebar({
               type="button"
               onClick={closeSettings}
               className={`
-                w-full flex items-center gap-3 px-4 py-2.5 mb-0.5
+                w-full flex items-center gap-3 px-4 py-2.5
                 transition-all duration-150 text-sm font-medium
                 text-gray-400 hover:bg-gray-800/50 hover:text-gray-200
                 ${collapsed ? 'justify-center px-2' : ''}
@@ -160,7 +158,7 @@ export default function Sidebar({
 
       {/* User / Sign out */}
       <div
-        className={`border-t border-gray-800 p-3 ${
+        className={`p-3 ${
           collapsed ? 'flex justify-center' : ''
         }`}
       >
@@ -200,25 +198,6 @@ export default function Sidebar({
           {!collapsed && <span>Sign out</span>}
         </button>
       </div>
-
-      {/* Collapse button */}
-      <button
-        type="button"
-        onClick={onToggleCollapse}
-        className="
-          absolute -right-3 top-1/2 -translate-y-1/2
-          w-6 h-6 bg-gray-800 border border-gray-700
-          rounded-full flex items-center justify-center
-          text-gray-400 hover:text-white hover:border-gray-600
-          transition-colors z-10
-        "
-      >
-        {collapsed ? (
-          <ChevronRight className="w-3 h-3" />
-        ) : (
-          <ChevronLeft className="w-3 h-3" />
-        )}
-      </button>
     </aside>
   );
 }
